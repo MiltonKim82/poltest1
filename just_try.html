@@ -1,0 +1,1471 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>정치 성향 지수</title>
+    <style>
+        html,
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        #top-box {
+            position: fixed;
+            display: inline-block;
+            padding-top: 0px;
+            width: 100%;
+            height: 50px;
+            background-color: rgb(80, 79, 79);
+            z-index: 1;
+            border: 0.8px solid white;
+            border-top: 0.5px;
+            border-left: none; 
+            border-right: none;
+        }
+
+        #sidebar_menu {
+            position: fixed;
+            width: 250px;
+            height: 100%;
+            background-color: rgb(116, 104, 104);
+            color: white;
+            font-size: 17px;
+            margin: 0px;
+            padding: 0px;
+            top: 0px;
+            left: -260px;
+            transition: all 0.5s ease;
+            z-index: 15;
+        }
+
+        input[id="sidebar"]:checked + #sidebar_menu{
+            /* transform: translateX(260px) 0.5s ease; */
+            left: 0px;
+        }
+
+        #sidebar_menu ol li a {
+            text-decoration: none;
+            color: white;
+        }
+
+
+        #top_text {
+            position: absolute;
+            display: inline;
+            color: white;
+            font-size: 23px;
+            left: 50px;
+            top: 5px;
+            margin-top: 3px;
+            z-index: 3;
+        }
+
+        [id*="top_line"] {
+            display: inline;
+            position: fixed;
+            width: 25px;
+            height: 2px;
+            background-color: white;
+            top: 13px;
+            left: 11px;
+        }
+
+        #top_line2 {
+            top: 23px;
+        }
+
+        #top_line3 {
+            top: 33px;
+        }
+
+        #sidebar_label {
+            position: fixed;
+            width: 50px;
+            height: 50px;
+            margin: 0px;
+            padding: 0px;
+            cursor: pointer;
+            background-color: transparent;
+            border: 1px solid transparent;
+            border-radius: 0px;
+            top: 0px;
+            left: 0px;
+            z-index: 6;
+        }
+
+        #sidebar_h2 {
+            margin-left: 15px;
+            margin-bottom: 70px;
+        }
+
+        input[type="radio"], input[type="checkbox"]
+        ,#result_bill, #result_surmery
+        , #임시_table, #이미지_찐진보, #이미지_진보, 
+        #이미지_중도, #이미지_보수, #이미지_찐보수
+        {
+            display: none;
+        }
+
+        input[type="radio"]+label, input[type="checkbox"]+label {
+            display: inline-block;
+            box-sizing: border-box;
+            width: 350px;
+            height: 55px;
+            border: 1px solid rgb(156, 154, 154);
+            border-radius: 35px;
+            text-align: center;
+            text-justify: auto;
+            padding-top: 14px;
+            vertical-align: auto;
+            margin-bottom: 10px;
+            margin-left: 20px;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+        #조선일보_label, #중앙일보_label, #동아일보_label, #한겨례_label, #경향신문_label, #MBC_label, #TV조선_label, #채널A_label, #JTBC_label, #오마이뉴스_label{
+            width: 100px;
+            display: inline-block;
+            margin-right: 5px;
+            margin-left: 5px;
+        }
+
+        #조력사망_label, #대리출산_label, #관계_개선_label, #통일_불필요_label,
+        #통일_필요_label, #위협이다_label, #위협_아니다_label, #지원_불필요_label, #강화_label, #자제_label,
+        #철수_가능_label, #철수_불가_label, #언론_역할_label, #국익_훼손_label
+        {
+            padding-top: 3px;   
+        }
+
+        input[type="radio"]:checked+label,
+        input[type="checkbox"]:checked+label{
+            background-color: rgb(252, 235, 139);
+            border: 2px solid red;
+        }
+
+        #결과버튼_label {
+            width: 300px;
+            height: 50px;
+            box-sizing: border-box;
+            padding: auto;
+            padding-top: 14px;
+            display: inline-block;
+            border: 0px solid black;
+            border-radius: 10px;
+            background-color: rgb(140, 183, 236);
+            transition: all 0.02s ease;
+            margin-left:45px;
+        }
+
+        #결과버튼:checked+label[id="결과버튼_label"] {
+            animation: big 0.5s ease;
+        }
+
+        @keyframes big {
+            from{transform:scale(1,1);}
+            20%{transform:scale(1.25,0.75);}
+            35%{transform:scale(0.75,1.25);}
+            50%{transform:scale(1.12,0.87);}
+            65%{transform:scale(0.87,1.12);}
+            80%{transform:scale(1.05,0.95);}
+            to{transform:scale(1,1);}
+        }
+
+        #table_result td {
+            border: 1px solid black;
+            text-align: center;
+        }
+        .숫자_인풋{
+            width:25px;
+            text-align: center;
+        }
+        h3, h2{
+            margin-left: 20px;
+            margin-top: 20px;
+        }
+        strong{
+            font-weight: 1000;
+        }
+        #임시_table td{
+            border: 1px solid black;
+        }
+        #결과_line{
+            border: 1px solid rgb(122, 120, 120);
+            margin-left: 5px;
+        }
+        .result_barometer td{
+            border: 1px solid black;
+            text-align: center;
+        }
+        #결과_글자크기{
+            font-size: 30px;
+            margin-left: 25px;
+            text-align: center;
+        }
+        #스펙트럼_img{
+            margin-left:30px;
+            width: 340px;
+        }
+        .스펙트럼_위치1{
+            position: relative;
+            width:20px;
+            height: 20px;
+            margin: 10px;
+            box-sizing: border-box;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-top: 10px solid black;
+            top: 26px;
+            left:181px;
+        }
+        #스펙트럼_위치{
+            left: 13 px;
+        }
+        #진보적_span{
+            position: relative;
+            left: 30px;
+        }
+        #보수적_span{
+            position: relative;
+            left: 270px;
+        }
+    </style>
+    <script>
+        function button_opption(){
+            if(document.getElementById('정치td1').value !== '-' &&
+            document.getElementById('정치td2').value !== '-' &&
+            document.getElementById('정치td3').value !== '-' &&
+            document.getElementById('정치td4').value !== '-' &&
+            document.getElementById('정치td5').value !== '-' &&
+            document.getElementById('안보td1').value !== '-' &&
+            document.getElementById('안보td2').value !== '-' &&
+            document.getElementById('안보td3').value !== '-' &&
+            document.getElementById('안보td4').value !== '-' &&
+            document.getElementById('안보td5').value !== '-' &&
+            document.getElementById('경제td1').value !== '-' &&
+            document.getElementById('경제td2').value !== '-' &&
+            document.getElementById('경제td3').value !== '-' &&
+            document.getElementById('경제td4').value !== '-' &&
+            document.getElementById('경제td5').value !== '-' &&
+            document.getElementById('문화td1').value !== '-' &&
+            document.getElementById('문화td2').value !== '-' &&
+            document.getElementById('문화td3').value !== '-' &&
+            document.getElementById('문화td4').value !== '-' &&
+            document.getElementById('복지td1').value !== '-' &&
+            document.getElementById('복지td2').value !== '-' &&
+            document.getElementById('복지td3').value !== '-' &&
+            document.getElementById('복지td4').value !== '-' &&
+            document.getElementById('복지td5').value !== '-' &&
+            document.getElementById('종교td1').value !== '-' &&
+            document.getElementById('종교td2').value !== '-' &&
+            document.getElementById('종교td3').value !== '-' &&
+            document.getElementById('종교td4').value !== '-'
+            ){
+                결과_요약();
+                result_bill_open();
+                alert('설문을 완료하셨습니다\n\n결과를 보시려면 확인을 누르고\n스크롤을 내려주세요');
+            }
+            else{
+                alert('완료하지 않은 설문이 있습니다');
+            }
+        }
+        
+        function 스펙트럼_위치선정(){
+            if(document.getElementById("최종_result").value == '-98'){document.getElementById('스펙트럼_위치').style.left = "13px";}
+            else if(document.getElementById("최종_result").value == '-97'){document.getElementById('스펙트럼_위치').style.left = "14.7px";}
+            else if(document.getElementById("최종_result").value == '-96'){document.getElementById('스펙트럼_위치').style.left = "16.4px";}
+            else if(document.getElementById("최종_result").value == '-95'){document.getElementById('스펙트럼_위치').style.left = "18.1px";}
+            else if(document.getElementById("최종_result").value == '-94'){document.getElementById('스펙트럼_위치').style.left = "19.8px";}
+            else if(document.getElementById("최종_result").value == '-93'){document.getElementById('스펙트럼_위치').style.left = "21.5px";}
+            else if(document.getElementById("최종_result").value == '-92'){document.getElementById('스펙트럼_위치').style.left = "23.2px";}
+            else if(document.getElementById("최종_result").value == '-91'){document.getElementById('스펙트럼_위치').style.left = "24.9px";}
+            else if(document.getElementById("최종_result").value == '-90'){document.getElementById('스펙트럼_위치').style.left = "26.6px";}
+            
+
+            else if(document.getElementById("최종_result").value == '-89'){document.getElementById('스펙트럼_위치').style.left = "28.3px";}
+            else if(document.getElementById("최종_result").value == '-88'){document.getElementById('스펙트럼_위치').style.left = "30.0px";}
+            else if(document.getElementById("최종_result").value == '-87'){document.getElementById('스펙트럼_위치').style.left = "31.7px";}
+            else if(document.getElementById("최종_result").value == '-86'){document.getElementById('스펙트럼_위치').style.left = "33.4px";}
+            else if(document.getElementById("최종_result").value == '-85'){document.getElementById('스펙트럼_위치').style.left = "35.1px";}
+            else if(document.getElementById("최종_result").value == '-84'){document.getElementById('스펙트럼_위치').style.left = "34.8px";}
+            else if(document.getElementById("최종_result").value == '-83'){document.getElementById('스펙트럼_위치').style.left = "36.5px";}
+            else if(document.getElementById("최종_result").value == '-82'){document.getElementById('스펙트럼_위치').style.left = "38.2px";}
+            else if(document.getElementById("최종_result").value == '-81'){document.getElementById('스펙트럼_위치').style.left = "39.9px";}
+            else if(document.getElementById("최종_result").value == '-80'){document.getElementById('스펙트럼_위치').style.left = "41.6px";}
+            
+            else if(document.getElementById("최종_result").value == '-79'){document.getElementById('스펙트럼_위치').style.left = "43.3px";}
+            else if(document.getElementById("최종_result").value == '-78'){document.getElementById('스펙트럼_위치').style.left = "45.0px";}
+            else if(document.getElementById("최종_result").value == '-77'){document.getElementById('스펙트럼_위치').style.left = "46.7px";}
+            else if(document.getElementById("최종_result").value == '-76'){document.getElementById('스펙트럼_위치').style.left = "48.4px";}
+            else if(document.getElementById("최종_result").value == '-75'){document.getElementById('스펙트럼_위치').style.left = "50.1px";}
+            else if(document.getElementById("최종_result").value == '-74'){document.getElementById('스펙트럼_위치').style.left = "51.8px";}
+            else if(document.getElementById("최종_result").value == '-73'){document.getElementById('스펙트럼_위치').style.left = "53.5px";}
+            else if(document.getElementById("최종_result").value == '-72'){document.getElementById('스펙트럼_위치').style.left = "55.2px";}
+            else if(document.getElementById("최종_result").value == '-71'){document.getElementById('스펙트럼_위치').style.left = "56.9px";}
+            else if(document.getElementById("최종_result").value == '-70'){document.getElementById('스펙트럼_위치').style.left = "58.6px";}
+            
+            else if(document.getElementById("최종_result").value == '-69'){document.getElementById('스펙트럼_위치').style.left = "60.5px";}
+            else if(document.getElementById("최종_result").value == '-68'){document.getElementById('스펙트럼_위치').style.left = "62.2px";}
+            else if(document.getElementById("최종_result").value == '-67'){document.getElementById('스펙트럼_위치').style.left = "63.9px";}
+            else if(document.getElementById("최종_result").value == '-66'){document.getElementById('스펙트럼_위치').style.left = "65.6px";}
+            else if(document.getElementById("최종_result").value == '-65'){document.getElementById('스펙트럼_위치').style.left = "67.3px";}
+            else if(document.getElementById("최종_result").value == '-64'){document.getElementById('스펙트럼_위치').style.left = "69.0px";}
+            else if(document.getElementById("최종_result").value == '-63'){document.getElementById('스펙트럼_위치').style.left = "70.7px";}
+            else if(document.getElementById("최종_result").value == '-62'){document.getElementById('스펙트럼_위치').style.left = "72.4px";}
+            else if(document.getElementById("최종_result").value == '-61'){document.getElementById('스펙트럼_위치').style.left = "74.1px";}
+            else if(document.getElementById("최종_result").value == '-60'){document.getElementById('스펙트럼_위치').style.left = "76.0px";}
+            
+            else if(document.getElementById("최종_result").value == '-59'){document.getElementById('스펙트럼_위치').style.left = "78.0px";}
+            else if(document.getElementById("최종_result").value == '-58'){document.getElementById('스펙트럼_위치').style.left = "80.0px";}
+            else if(document.getElementById("최종_result").value == '-57'){document.getElementById('스펙트럼_위치').style.left = "81.7px";}
+            else if(document.getElementById("최종_result").value == '-56'){document.getElementById('스펙트럼_위치').style.left = "83.4px";}
+            else if(document.getElementById("최종_result").value == '-55'){document.getElementById('스펙트럼_위치').style.left = "85.1px";}
+            else if(document.getElementById("최종_result").value == '-54'){document.getElementById('스펙트럼_위치').style.left = "86.8px";}
+            else if(document.getElementById("최종_result").value == '-53'){document.getElementById('스펙트럼_위치').style.left = "88.5px";}
+            else if(document.getElementById("최종_result").value == '-52'){document.getElementById('스펙트럼_위치').style.left = "90.2px";}
+            else if(document.getElementById("최종_result").value == '-51'){document.getElementById('스펙트럼_위치').style.left = "91.9px";}
+            else if(document.getElementById("최종_result").value == '-50'){document.getElementById('스펙트럼_위치').style.left = "93.6px";}
+            
+            else if(document.getElementById("최종_result").value == '-49'){document.getElementById('스펙트럼_위치').style.left = "95.3px";}
+            else if(document.getElementById("최종_result").value == '-48'){document.getElementById('스펙트럼_위치').style.left = "97.0px";}
+            else if(document.getElementById("최종_result").value == '-47'){document.getElementById('스펙트럼_위치').style.left = "98.7px";}
+            else if(document.getElementById("최종_result").value == '-46'){document.getElementById('스펙트럼_위치').style.left = "100.4px";}
+            else if(document.getElementById("최종_result").value == '-45'){document.getElementById('스펙트럼_위치').style.left = "102.1px";}
+            else if(document.getElementById("최종_result").value == '-44'){document.getElementById('스펙트럼_위치').style.left = "103.8px";}
+            else if(document.getElementById("최종_result").value == '-43'){document.getElementById('스펙트럼_위치').style.left = "105.5px";}
+            else if(document.getElementById("최종_result").value == '-42'){document.getElementById('스펙트럼_위치').style.left = "107.2px";}
+            else if(document.getElementById("최종_result").value == '-41'){document.getElementById('스펙트럼_위치').style.left = "108.9px";}
+            else if(document.getElementById("최종_result").value == '-40'){document.getElementById('스펙트럼_위치').style.left = "110.6px";}
+            
+            else if(document.getElementById("최종_result").value == '-39'){document.getElementById('스펙트럼_위치').style.left = "112.3px";}
+            else if(document.getElementById("최종_result").value == '-38'){document.getElementById('스펙트럼_위치').style.left = "114.0px";}
+            else if(document.getElementById("최종_result").value == '-37'){document.getElementById('스펙트럼_위치').style.left = "115.7px";}
+            else if(document.getElementById("최종_result").value == '-36'){document.getElementById('스펙트럼_위치').style.left = "117.4px";}
+            else if(document.getElementById("최종_result").value == '-35'){document.getElementById('스펙트럼_위치').style.left = "119.1px";}
+            else if(document.getElementById("최종_result").value == '-34'){document.getElementById('스펙트럼_위치').style.left = "120.8px";}
+            else if(document.getElementById("최종_result").value == '-33'){document.getElementById('스펙트럼_위치').style.left = "122.5px";}
+            else if(document.getElementById("최종_result").value == '-32'){document.getElementById('스펙트럼_위치').style.left = "124.7px";}
+            else if(document.getElementById("최종_result").value == '-31'){document.getElementById('스펙트럼_위치').style.left = "126.4px";}
+            else if(document.getElementById("최종_result").value == '-30'){document.getElementById('스펙트럼_위치').style.left = "128.1px";}
+            
+            else if(document.getElementById("최종_result").value == '-29'){document.getElementById('스펙트럼_위치').style.left = "129.8px";}
+            else if(document.getElementById("최종_result").value == '-28'){document.getElementById('스펙트럼_위치').style.left = "131.5px";}
+            else if(document.getElementById("최종_result").value == '-27'){document.getElementById('스펙트럼_위치').style.left = "133.2px";}
+            else if(document.getElementById("최종_result").value == '-26'){document.getElementById('스펙트럼_위치').style.left = "134.9px";}
+            else if(document.getElementById("최종_result").value == '-25'){document.getElementById('스펙트럼_위치').style.left = "136.6px";}
+            else if(document.getElementById("최종_result").value == '-24'){document.getElementById('스펙트럼_위치').style.left = "138.3px";}
+            else if(document.getElementById("최종_result").value == '-23'){document.getElementById('스펙트럼_위치').style.left = "140.0px";}
+            else if(document.getElementById("최종_result").value == '-22'){document.getElementById('스펙트럼_위치').style.left = "141.7px";}
+            else if(document.getElementById("최종_result").value == '-21'){document.getElementById('스펙트럼_위치').style.left = "143.4px";}
+            else if(document.getElementById("최종_result").value == '-20'){document.getElementById('스펙트럼_위치').style.left = "145.1px";}
+            
+            else if(document.getElementById("최종_result").value == '-19'){document.getElementById('스펙트럼_위치').style.left = "146.8px";}
+            else if(document.getElementById("최종_result").value == '-18'){document.getElementById('스펙트럼_위치').style.left = "147px";}
+            else if(document.getElementById("최종_result").value == '-17'){document.getElementById('스펙트럼_위치').style.left = "148.7px";}
+            else if(document.getElementById("최종_result").value == '-16'){document.getElementById('스펙트럼_위치').style.left = "150.4px";}
+            else if(document.getElementById("최종_result").value == '-15'){document.getElementById('스펙트럼_위치').style.left = "152.1px";}
+            else if(document.getElementById("최종_result").value == '-14'){document.getElementById('스펙트럼_위치').style.left = "153.8px";}
+            else if(document.getElementById("최종_result").value == '-13'){document.getElementById('스펙트럼_위치').style.left = "155.5px";}
+            else if(document.getElementById("최종_result").value == '-12'){document.getElementById('스펙트럼_위치').style.left = "157.2px";}
+            else if(document.getElementById("최종_result").value == '-11'){document.getElementById('스펙트럼_위치').style.left = "158.9px";}
+            else if(document.getElementById("최종_result").value == '-10'){document.getElementById('스펙트럼_위치').style.left = "160.6px";}
+            
+            else if(document.getElementById("최종_result").value == '-9'){document.getElementById('스펙트럼_위치').style.left = "161.3px";}
+            else if(document.getElementById("최종_result").value == '-8'){document.getElementById('스펙트럼_위치').style.left = "163.0px";}
+            else if(document.getElementById("최종_result").value == '-7'){document.getElementById('스펙트럼_위치').style.left = "164.7px";}
+            else if(document.getElementById("최종_result").value == '-6'){document.getElementById('스펙트럼_위치').style.left = "166.4px";}
+            else if(document.getElementById("최종_result").value == '-5'){document.getElementById('스펙트럼_위치').style.left = "168.1px";}
+            else if(document.getElementById("최종_result").value == '-4'){document.getElementById('스펙트럼_위치').style.left = "169.8px";}
+            else if(document.getElementById("최종_result").value == '-3'){document.getElementById('스펙트럼_위치').style.left = "171.5px";}
+            else if(document.getElementById("최종_result").value == '-2'){document.getElementById('스펙트럼_위치').style.left = "173.2px";}
+            else if(document.getElementById("최종_result").value == '-1'){document.getElementById('스펙트럼_위치').style.left = "175.9px";}
+            
+            else if(document.getElementById("최종_result").value == '9'){document.getElementById('스펙트럼_위치').style.left = "196.0px";}
+            else if(document.getElementById("최종_result").value == '8'){document.getElementById('스펙트럼_위치').style.left = "194.0px";}
+            else if(document.getElementById("최종_result").value == '7'){document.getElementById('스펙트럼_위치').style.left = "192.0px";}
+            else if(document.getElementById("최종_result").value == '6'){document.getElementById('스펙트럼_위치').style.left = "190.0px";}
+            else if(document.getElementById("최종_result").value == '5'){document.getElementById('스펙트럼_위치').style.left = "188.0px";}
+            else if(document.getElementById("최종_result").value == '4'){document.getElementById('스펙트럼_위치').style.left = "185.4px";}
+            else if(document.getElementById("최종_result").value == '3'){document.getElementById('스펙트럼_위치').style.left = "183.7px";}
+            else if(document.getElementById("최종_result").value == '2'){document.getElementById('스펙트럼_위치').style.left = "182.0px";}
+            else if(document.getElementById("최종_result").value == '1'){document.getElementById('스펙트럼_위치').style.left = "180.3px";}
+            else if(document.getElementById("최종_result").value == '0'){document.getElementById('스펙트럼_위치').style.left = "178.6px";}
+            
+            else if(document.getElementById("최종_result").value == '19'){document.getElementById('스펙트럼_위치').style.left = "216.0px";}
+            else if(document.getElementById("최종_result").value == '18'){document.getElementById('스펙트럼_위치').style.left = "214.0px";}
+            else if(document.getElementById("최종_result").value == '17'){document.getElementById('스펙트럼_위치').style.left = "212.0px";}
+            else if(document.getElementById("최종_result").value == '16'){document.getElementById('스펙트럼_위치').style.left = "210.0px";}
+            else if(document.getElementById("최종_result").value == '15'){document.getElementById('스펙트럼_위치').style.left = "208.0px";}
+            else if(document.getElementById("최종_result").value == '14'){document.getElementById('스펙트럼_위치').style.left = "206.0px";}
+            else if(document.getElementById("최종_result").value == '13'){document.getElementById('스펙트럼_위치').style.left = "204.0px";}
+            else if(document.getElementById("최종_result").value == '12'){document.getElementById('스펙트럼_위치').style.left = "202.0px";}
+            else if(document.getElementById("최종_result").value == '11'){document.getElementById('스펙트럼_위치').style.left = "200.0px";}
+            else if(document.getElementById("최종_result").value == '10'){document.getElementById('스펙트럼_위치').style.left = "198.0px";}
+            
+            else if(document.getElementById("최종_result").value == '29'){document.getElementById('스펙트럼_위치').style.left = "236.0px";}
+            else if(document.getElementById("최종_result").value == '28'){document.getElementById('스펙트럼_위치').style.left = "234.0px";}
+            else if(document.getElementById("최종_result").value == '27'){document.getElementById('스펙트럼_위치').style.left = "232.0px";}
+            else if(document.getElementById("최종_result").value == '26'){document.getElementById('스펙트럼_위치').style.left = "230.0px";}
+            else if(document.getElementById("최종_result").value == '25'){document.getElementById('스펙트럼_위치').style.left = "228.0px";}
+            else if(document.getElementById("최종_result").value == '24'){document.getElementById('스펙트럼_위치').style.left = "226.0px";}
+            else if(document.getElementById("최종_result").value == '23'){document.getElementById('스펙트럼_위치').style.left = "224.0px";}
+            else if(document.getElementById("최종_result").value == '22'){document.getElementById('스펙트럼_위치').style.left = "222.0px";}
+            else if(document.getElementById("최종_result").value == '21'){document.getElementById('스펙트럼_위치').style.left = "220.0px";}
+            else if(document.getElementById("최종_result").value == '20'){document.getElementById('스펙트럼_위치').style.left = "218.0px";}
+            
+            else if(document.getElementById("최종_result").value == '39'){document.getElementById('스펙트럼_위치').style.left = "253.3px";}
+            else if(document.getElementById("최종_result").value == '38'){document.getElementById('스펙트럼_위치').style.left = "251.7px";}
+            else if(document.getElementById("최종_result").value == '37'){document.getElementById('스펙트럼_위치').style.left = "249.0px";}
+            else if(document.getElementById("최종_result").value == '36'){document.getElementById('스펙트럼_위치').style.left = "248.0px";}
+            else if(document.getElementById("최종_result").value == '35'){document.getElementById('스펙트럼_위치').style.left = "246.3px";}
+            else if(document.getElementById("최종_result").value == '34'){document.getElementById('스펙트럼_위치').style.left = "245.6px";}
+            else if(document.getElementById("최종_result").value == '33'){document.getElementById('스펙트럼_위치').style.left = "243.8px";}
+            else if(document.getElementById("최종_result").value == '32'){document.getElementById('스펙트럼_위치').style.left = "242.0px";}
+            else if(document.getElementById("최종_result").value == '31'){document.getElementById('스펙트럼_위치').style.left = "240.4px";}
+            else if(document.getElementById("최종_result").value == '30'){document.getElementById('스펙트럼_위치').style.left = "238.0px";}
+            
+            else if(document.getElementById("최종_result").value == '49'){document.getElementById('스펙트럼_위치').style.left = "271.4px";}
+            else if(document.getElementById("최종_result").value == '48'){document.getElementById('스펙트럼_위치').style.left = "269.7px";}
+            else if(document.getElementById("최종_result").value == '47'){document.getElementById('스펙트럼_위치').style.left = "267.0px";}
+            else if(document.getElementById("최종_result").value == '46'){document.getElementById('스펙트럼_위치').style.left = "265.2px";}
+            else if(document.getElementById("최종_result").value == '45'){document.getElementById('스펙트럼_위치').style.left = "263.5px";}
+            else if(document.getElementById("최종_result").value == '44'){document.getElementById('스펙트럼_위치').style.left = "261.8px";}
+            else if(document.getElementById("최종_result").value == '43'){document.getElementById('스펙트럼_위치').style.left = "260.1px";}
+            else if(document.getElementById("최종_result").value == '42'){document.getElementById('스펙트럼_위치').style.left = "258.4px";}
+            else if(document.getElementById("최종_result").value == '41'){document.getElementById('스펙트럼_위치').style.left = "256.7px";}
+            else if(document.getElementById("최종_result").value == '40'){document.getElementById('스펙트럼_위치').style.left = "255.0px";}
+            
+            else if(document.getElementById("최종_result").value == '59'){document.getElementById('스펙트럼_위치').style.left = "291.6px";}
+            else if(document.getElementById("최종_result").value == '58'){document.getElementById('스펙트럼_위치').style.left = "289px";}
+            else if(document.getElementById("최종_result").value == '57'){document.getElementById('스펙트럼_위치').style.left = "287.0px";}
+            else if(document.getElementById("최종_result").value == '56'){document.getElementById('스펙트럼_위치').style.left = "285.0px";}
+            else if(document.getElementById("최종_result").value == '55'){document.getElementById('스펙트럼_위치').style.left = "283.0px";}
+            else if(document.getElementById("최종_result").value == '54'){document.getElementById('스펙트럼_위치').style.left = "281.1px";}
+            else if(document.getElementById("최종_result").value == '53'){document.getElementById('스펙트럼_위치').style.left = "279.8px";}
+            else if(document.getElementById("최종_result").value == '52'){document.getElementById('스펙트럼_위치').style.left = "277.5px";}
+            else if(document.getElementById("최종_result").value == '51'){document.getElementById('스펙트럼_위치').style.left = "275.2px";}
+            else if(document.getElementById("최종_result").value == '50'){document.getElementById('스펙트럼_위치').style.left = "273.0px";}
+            
+            else if(document.getElementById("최종_result").value == '69'){document.getElementById('스펙트럼_위치').style.left = "311.6px";}
+            else if(document.getElementById("최종_result").value == '68'){document.getElementById('스펙트럼_위치').style.left = "309.3px";}
+            else if(document.getElementById("최종_result").value == '67'){document.getElementById('스펙트럼_위치').style.left = "307px";}
+            else if(document.getElementById("최종_result").value == '66'){document.getElementById('스펙트럼_위치').style.left = "305.7px";}
+            else if(document.getElementById("최종_result").value == '65'){document.getElementById('스펙트럼_위치').style.left = "303.4px";}
+            else if(document.getElementById("최종_result").value == '64'){document.getElementById('스펙트럼_위치').style.left = "301.1px";}
+            else if(document.getElementById("최종_result").value == '63'){document.getElementById('스펙트럼_위치').style.left = "299.8px";}
+            else if(document.getElementById("최종_result").value == '62'){document.getElementById('스펙트럼_위치').style.left = "297.5px";}
+            else if(document.getElementById("최종_result").value == '61'){document.getElementById('스펙트럼_위치').style.left = "295.2px";}
+            else if(document.getElementById("최종_result").value == '60'){document.getElementById('스펙트럼_위치').style.left = "293.9px";}
+            
+            else if(document.getElementById("최종_result").value == '89'){document.getElementById('스펙트럼_위치').style.left = "331.6px";}
+            else if(document.getElementById("최종_result").value == '88'){document.getElementById('스펙트럼_위치').style.left = "329.3px";}
+            else if(document.getElementById("최종_result").value == '87'){document.getElementById('스펙트럼_위치').style.left = "327px";}
+            else if(document.getElementById("최종_result").value == '86'){document.getElementById('스펙트럼_위치').style.left = "325.7px";}
+            else if(document.getElementById("최종_result").value == '85'){document.getElementById('스펙트럼_위치').style.left = "323.4px";}
+            else if(document.getElementById("최종_result").value == '84'){document.getElementById('스펙트럼_위치').style.left = "321.1px";}
+            else if(document.getElementById("최종_result").value == '83'){document.getElementById('스펙트럼_위치').style.left = "319.8px";}
+            else if(document.getElementById("최종_result").value == '82'){document.getElementById('스펙트럼_위치').style.left = "317.5px";}
+            else if(document.getElementById("최종_result").value == '81'){document.getElementById('스펙트럼_위치').style.left = "315.2px";}
+            else if(document.getElementById("최종_result").value == '80'){document.getElementById('스펙트럼_위치').style.left = "313.9px";}
+            
+            else if(document.getElementById("최종_result").value == '98'){document.getElementById('스펙트럼_위치').style.left = "349.0px";}
+            else if(document.getElementById("최종_result").value == '97'){document.getElementById('스펙트럼_위치').style.left = "347px";}
+            else if(document.getElementById("최종_result").value == '96'){document.getElementById('스펙트럼_위치').style.left = "345px";}
+            else if(document.getElementById("최종_result").value == '95'){document.getElementById('스펙트럼_위치').style.left = "343.4px";}
+            else if(document.getElementById("최종_result").value == '94'){document.getElementById('스펙트럼_위치').style.left = "341.1px";}
+            else if(document.getElementById("최종_result").value == '93'){document.getElementById('스펙트럼_위치').style.left = "339.8px";}
+            else if(document.getElementById("최종_result").value == '92'){document.getElementById('스펙트럼_위치').style.left = "337.5px";}
+            else if(document.getElementById("최종_result").value == '91'){document.getElementById('스펙트럼_위치').style.left = "335.2px";}
+            else if(document.getElementById("최종_result").value == '90'){document.getElementById('스펙트럼_위치').style.left = "333.9px";}
+            
+
+        }
+        function 결과_요약(){
+            document.getElementById('result_surmery').style.display = 'inline-block';
+        }
+        function result_bill_open() {
+            document.getElementById('result_bill').style.display = 'inline-block';
+            document.getElementById('결과버튼_label').style.display = 'none';
+            
+            문Q5_조선일보();
+            문Q5_중앙일보();
+            문Q5_동아일보();
+            문Q5_한겨례();
+            문Q5_경향신문();
+            문Q5_MBC();
+            문Q5_TV조선();
+            문Q5_채널A();
+            문Q5_JTBC();
+            문Q5_오마이뉴스();
+            문Q5();
+
+            종Q5_차별금지법();
+            종Q5_낙태죄();
+            종Q5_간통죄();
+            종Q5_대리모();
+            종Q5_존엄사();
+            종Q5();
+
+            정치_Sum();
+            안보_Sum();
+            경제_Sum();
+            문화_Sum();
+            복지_Sum();
+            종교_Sum();
+            최종_Sum();
+
+            알림_부등호();
+
+            스펙트럼_위치선정()
+
+            
+        }
+
+
+        // 정치Q
+
+        function 정Q1(){ 
+            if(document.getElementById('미국').checked){
+               document.getElementById('정치td1').value= 3;
+            }
+            else{
+                document.getElementById('정치td1').value= -3;
+            }   
+        }
+        function 정Q2(){ 
+            if(document.getElementById('관계_개선').checked){
+               document.getElementById('정치td2').value= 3;
+            } 
+            else{
+                document.getElementById('정치td2').value= -3;
+            }   
+        }
+        function 정Q3(){ 
+            if(document.getElementById('4강_외교').checked){
+               document.getElementById('정치td3').value= 3;
+            } 
+            else{
+                document.getElementById('정치td3').value= -3;
+            }   
+        }
+        function 정Q4(){ 
+            if(document.getElementById('자유민주주의').checked){
+               document.getElementById('정치td4').value= 3;
+            } 
+            else{
+                document.getElementById('정치td4').value= -3;
+            }   
+        }
+        function 정Q5(){ 
+            if(document.getElementById('사회적_비용').checked){
+               document.getElementById('정치td5').value= 3;
+            } 
+            else{
+                document.getElementById('정치td5').value= -3;
+            }   
+        }
+        function 정치_Sum(){
+            let a = document.getElementById('정치td1').value;
+            let b = document.getElementById('정치td2').value;
+            let c = document.getElementById('정치td3').value;
+            let d = document.getElementById('정치td4').value;
+            let e = document.getElementById('정치td5').value;
+            document.getElementById("정치_result").value = Number(a)+Number(b)+Number(c)+Number(d)+Number(e);
+        }
+
+
+        // 안보Q
+
+        function 안Q1(){ 
+            if(document.getElementById('통일_불필요').checked){
+               document.getElementById('안보td1').value= 3;
+            } 
+            else{
+                document.getElementById('안보td1').value= -3;
+            }
+        }
+        function 안Q2(){ 
+            if(document.getElementById('위협이다').checked){
+               document.getElementById('안보td2').value= 3;
+            } 
+            else{
+                document.getElementById('안보td2').value= -3;
+            }   
+        }
+        function 안Q3(){ 
+            if(document.getElementById('지원_불필요').checked){
+               document.getElementById('안보td3').value= 3;
+            } 
+            else{
+                document.getElementById('안보td3').value= -3;
+            }   
+        }
+        function 안Q4(){ 
+            if(document.getElementById('강화').checked){
+               document.getElementById('안보td4').value= 3;
+            } 
+            else{
+                document.getElementById('안보td4').value= -3;
+            }   
+        }
+        function 안Q5(){ 
+            if(document.getElementById('철수_불가').checked){
+               document.getElementById('안보td5').value= 3;
+            } 
+            else{
+                document.getElementById('안보td5').value= -3;
+            }   
+        }
+        function 안보_Sum(){
+            let f = document.getElementById('안보td1').value;
+            let g = document.getElementById('안보td2').value;
+            let h = document.getElementById('안보td3').value;
+            let i = document.getElementById('안보td4').value;
+            let j = document.getElementById('안보td5').value;
+            document.getElementById("안보_result").value = Number(f) + Number(g) + Number(h) + Number(i) + Number(j);
+        }
+
+
+        // 경제Q
+
+        function 경Q1(){ 
+            if(document.getElementById('경제적_성장').checked){
+               document.getElementById('경제td1').value= 3;
+            } 
+            else{
+                document.getElementById('경제td1').value= -3;
+            }   
+            안보_Sum()
+        }
+        function 경Q2(){ 
+            if(document.getElementById('개인의_능력').checked){
+               document.getElementById('경제td2').value= 3;
+            } 
+            else{
+                document.getElementById('경제td2').value= -3;
+            }   
+        }
+        function 경Q3(){ 
+            if(document.getElementById('거부권').checked){
+               document.getElementById('경제td3').value= 3;
+            } 
+            else{
+                document.getElementById('경제td3').value= -3;
+            }   
+        }
+        function 경Q4(){ 
+            if(document.getElementById('불법_파업').checked){
+               document.getElementById('경제td4').value= 3;
+            } 
+            else{
+                document.getElementById('경제td4').value= -3;
+            }   
+        }
+        function 경Q5(){ 
+            if(document.getElementById('노동_증가').checked){
+               document.getElementById('경제td5').value= 3;
+            } 
+            else{
+                document.getElementById('경제td5').value= -3;
+            }   
+        }
+        function 경제_Sum(){
+            let k = document.getElementById('경제td1').value;
+            let l = document.getElementById('경제td2').value;
+            let m = document.getElementById('경제td3').value;
+            let n = document.getElementById('경제td4').value;
+            let o = document.getElementById('경제td5').value;
+            document.getElementById("경제_result").value = Number(k) + Number(l) + Number(m) + Number(n) + Number(o);
+        }
+
+
+        // 문화Q
+
+        function 문Q1(){ 
+            if(document.getElementById('트렌드').checked){
+               document.getElementById('문화td1').value= 3;
+            } 
+            else{
+                document.getElementById('문화td1').value= -3;
+            }
+            경제_Sum()   
+        }
+        function 문Q2(){ 
+            if(document.getElementById('PC주의_부정').checked){
+               document.getElementById('문화td2').value= 3;
+            } 
+            else{
+                document.getElementById('문화td2').value= -3;
+            }   
+        }
+        function 문Q3(){ 
+            if(document.getElementById('심의').checked){
+               document.getElementById('문화td3').value= 3;
+            } 
+            else{
+                document.getElementById('문화td3').value= -3;
+            }   
+        }
+        function 문Q4(){ 
+            if(document.getElementById('국익_훼손').checked){
+               document.getElementById('문화td4').value= 3;
+            } 
+            else{
+                document.getElementById('문화td4').value= -3;
+            }   
+        }
+         
+        function 문Q5_조선일보(){
+            if(document.getElementById('조선일보').checked){
+            document.getElementById('임시_1_1').value= 2;
+            } 
+            else{
+                document.getElementById('임시_1_1').value= 0;
+            }
+        }
+        function 문Q5_중앙일보(){
+            if(document.getElementById('중앙일보').checked){
+            document.getElementById('임시_1_2').value= 2;
+            } 
+            else{
+                document.getElementById('임시_1_2').value= 0;
+            }
+        }
+        function 문Q5_동아일보(){
+            if(document.getElementById('동아일보').checked){
+            document.getElementById('임시_1_3').value= 2;
+            } 
+            else{
+                document.getElementById('임시_1_3').value= 0;
+            }
+        }
+        function 문Q5_한겨례(){
+            if(document.getElementById('한겨례').checked){
+            document.getElementById('임시_1_4').value= -2;
+            } 
+            else{
+                document.getElementById('임시_1_4').value= 0;
+            }
+        }
+        function 문Q5_경향신문(){
+            if(document.getElementById('경향신문').checked){
+            document.getElementById('임시_1_5').value= -2;
+            } 
+            else{
+                document.getElementById('임시_1_5').value= 0;
+            }
+        }
+        function 문Q5_MBC(){
+            if(document.getElementById('MBC').checked){
+            document.getElementById('임시_1_6').value= -2;
+            } 
+            else{
+                document.getElementById('임시_1_6').value= 0;
+            }
+        }
+        function 문Q5_TV조선(){
+            if(document.getElementById('TV조선').checked){
+            document.getElementById('임시_1_7').value= 2;
+            } 
+            else{
+                document.getElementById('임시_1_7').value= 0;
+            }
+        }
+        function 문Q5_채널A(){
+            if(document.getElementById('채널A').checked){
+            document.getElementById('임시_1_8').value= 2;
+            } 
+            else{
+                document.getElementById('임시_1_8').value= 0;
+            }
+        }
+        function 문Q5_JTBC(){
+            if(document.getElementById('JTBC').checked){
+            document.getElementById('임시_1_9').value= -2;
+            } 
+            else{
+                document.getElementById('임시_1_9').value= 0;
+            }
+        }
+        function 문Q5_오마이뉴스(){
+            if(document.getElementById('오마이뉴스').checked){
+            document.getElementById('임시_1_10').value= -2;
+            } 
+            else{
+                document.getElementById('임시_1_10').value= 0;
+            }
+        }
+
+        function 문Q5(){
+            let 문A = document.getElementById('임시_1_1').value;
+            let 문B = document.getElementById('임시_1_2').value;
+            let 문C = document.getElementById('임시_1_3').value;
+            let 문D = document.getElementById('임시_1_4').value;
+            let 문E = document.getElementById('임시_1_5').value;
+            let 문F = document.getElementById('임시_1_6').value;
+            let 문G = document.getElementById('임시_1_7').value;
+            let 문H = document.getElementById('임시_1_8').value;
+            let 문I = document.getElementById('임시_1_9').value;
+            let 문J = document.getElementById('임시_1_10').value;
+            
+            document.getElementById("문화td5").value = 
+            Number(문A) + Number(문B) + Number(문C) + Number(문D) 
+            + Number(문E) + Number(문F)+ Number(문G)+ Number(문H)
+            + Number(문I)+ Number(문J);
+        }
+        
+        function 문화_Sum(){
+            let p = document.getElementById('문화td1').value;
+            let q = document.getElementById('문화td2').value;
+            let r = document.getElementById('문화td3').value;
+            let s = document.getElementById('문화td4').value;
+            let t = document.getElementById('문화td5').value;
+            document.getElementById("문화_result").value = Number(p) + Number(q) + Number(r) + Number(s) + Number(t);
+        }
+
+
+        // 복지Q
+
+        function 복Q1(){ 
+            if(document.getElementById('선별적_복지').checked){
+               document.getElementById('복지td1').value= 3;
+            } 
+            else{
+                document.getElementById('복지td1').value= -3;
+            }
+        }
+        function 복Q2(){ 
+            if(document.getElementById('전장연_불법').checked){
+               document.getElementById('복지td2').value= 3;
+            } 
+            else{
+                document.getElementById('복지td2').value= -3;
+            }   
+        }
+        function 복Q3(){ 
+            if(document.getElementById('복지_긴축').checked){
+               document.getElementById('복지td3').value= 3;
+            } 
+            else{
+                document.getElementById('복지td3').value= -3;
+            }   
+        }
+        function 복Q4(){ 
+            if(document.getElementById('촉법소년_처벌').checked){
+               document.getElementById('복지td4').value= 3;
+            } 
+            else{
+                document.getElementById('복지td4').value= -3;
+            }   
+        }
+        function 복Q5(){ 
+            if(document.getElementById('교권_신장').checked){
+               document.getElementById('복지td5').value= 3;
+            } 
+            else{
+                document.getElementById('복지td5').value= -3;
+            }   
+        }
+        function 복지_Sum(){
+            let u = document.getElementById('복지td1').value;
+            let v = document.getElementById('복지td2').value;
+            let w = document.getElementById('복지td3').value;
+            let x = document.getElementById('복지td4').value;
+            let y = document.getElementById('복지td5').value;
+            document.getElementById("복지_result").value = Number(u) + Number(v) + Number(w) + Number(x) + Number(y);
+        }
+
+
+        // 종교Q
+
+        function 종Q1(){ 
+            if(document.getElementById('종교').checked){
+               document.getElementById('종교td1').value= 3;
+            } 
+            else{
+                document.getElementById('종교td1').value= -3;
+            }
+        }
+        function 종Q2(){ 
+            if(document.getElementById('종교2').checked){
+               document.getElementById('종교td2').value= 3;
+            } 
+            else{
+                document.getElementById('종교td2').value= -3;
+            }   
+        }
+        function 종Q3(){ 
+            if(document.getElementById('사람_평가').checked){
+               document.getElementById('종교td3').value= 3;
+            } 
+            else{
+                document.getElementById('종교td3').value= -3;
+            }   
+        }
+        function 종Q4(){ 
+            if(document.getElementById('적대가치').checked){
+               document.getElementById('종교td4').value= 3;
+            } 
+            else{
+                document.getElementById('종교td4').value= -3;
+            }   
+        }
+
+        function 종Q5_차별금지법(){
+            if(document.getElementById('차별금지법').checked){
+            document.getElementById('임시_2_1').value= -2;
+            } 
+            else{
+                document.getElementById('임시_2_1').value= 2;
+            }
+        }
+        function 종Q5_낙태죄(){
+            if(document.getElementById('낙태죄').checked){
+            document.getElementById('임시_2_2').value= -2;
+            } 
+            else{
+                document.getElementById('임시_2_2').value= 2;
+            }
+        }
+        function 종Q5_간통죄(){
+            if(document.getElementById('간통죄').checked){
+            document.getElementById('임시_2_3').value= 2;
+            } 
+            else{
+                document.getElementById('임시_2_3').value= -2;
+            }
+        }
+        function 종Q5_대리모(){
+            if(document.getElementById('대리모').checked){
+            document.getElementById('임시_2_4').value= -2;
+            } 
+            else{
+                document.getElementById('임시_2_4').value= 2;
+            }
+        }
+        function 종Q5_존엄사(){
+            if(document.getElementById('존엄사').checked){
+            document.getElementById('임시_2_5').value= -2;
+            } 
+            else{
+                document.getElementById('임시_2_5').value= 2;
+            }
+            종Q5();
+            종교_Sum();
+        }
+        function 종Q5(){
+            let 종A = document.getElementById('임시_2_1').value;
+            let 종B = document.getElementById('임시_2_2').value;
+            let 종C = document.getElementById('임시_2_3').value;
+            let 종D = document.getElementById('임시_2_4').value;
+            let 종E = document.getElementById('임시_2_5').value;
+            
+            document.getElementById("종교td5").value = 
+            Number(종A) + Number(종B) + Number(종C) + Number(종D) + Number(종E);
+        }
+        function 종교_Sum(){
+            let aa = document.getElementById('종교td1').value;
+            let bb = document.getElementById('종교td2').value;
+            let cc = document.getElementById('종교td3').value;
+            let dd = document.getElementById('종교td4').value;
+            let ee = document.getElementById('종교td5').value;
+            document.getElementById("종교_result").value = Number(aa) + Number(bb) + Number(cc) + Number(dd) + Number(ee);
+        }
+
+
+        function 최종_Sum(){
+            let 정치값 = document.getElementById('정치_result').value;
+            let 안보값 = document.getElementById('안보_result').value;
+            let 경제값 = document.getElementById('경제_result').value;
+            let 문화값 = document.getElementById('문화_result').value;
+            let 복지값 = document.getElementById('복지_result').value;
+            let 종교값 = document.getElementById('종교_result').value;
+            document.getElementById("최종_result").value = Number(정치값) + Number(안보값) + Number(경제값) + Number(문화값) + Number(복지값) + Number(종교값);
+        }
+        function 찐진보_img(){
+            document.getElementById('이미지_찐진보').style.display = 'inline-block';
+            document.getElementById('이미지_진보').style.display = 'none';
+            document.getElementById('이미지_중도').style.display = 'none';
+            document.getElementById('이미지_보수').style.display = 'none';
+            document.getElementById('이미지_찐보수').style.display = 'none';
+        }
+        function 진보_img(){
+            document.getElementById('이미지_진보').style.display = 'inline-block';
+            document.getElementById('이미지_찐진보').style.display = 'none';
+            document.getElementById('이미지_중도').style.display = 'none';
+            document.getElementById('이미지_보수').style.display = 'none';
+            document.getElementById('이미지_찐보수').style.display = 'none';
+        }
+        function 중도_img(){
+            document.getElementById('이미지_중도').style.display = 'inline-block';
+            document.getElementById('이미지_진보').style.display = 'none';
+            document.getElementById('이미지_찐진보').style.display = 'none';
+            document.getElementById('이미지_보수').style.display = 'none';
+            document.getElementById('이미지_찐보수').style.display = 'none';
+        }
+        function 보수_img(){
+            document.getElementById('이미지_보수').style.display = 'inline-block';
+            document.getElementById('이미지_진보').style.display = 'none';
+            document.getElementById('이미지_중도').style.display = 'none';
+            document.getElementById('이미지_찐진보').style.display = 'none';
+            document.getElementById('이미지_찐보수').style.display = 'none';
+        }
+        function 찐보수_img(){
+            document.getElementById('이미지_찐보수').style.display = 'inline-block';
+            document.getElementById('이미지_진보').style.display = 'none';
+            document.getElementById('이미지_중도').style.display = 'none';
+            document.getElementById('이미지_보수').style.display = 'none';
+            document.getElementById('이미지_찐진보').style.display = 'none';
+        }
+        function 알림_부등호(){
+            if(document.getElementById("최종_result").value < -55){
+                document.getElementById('부등호').innerHTML="찐진보주의";
+                찐진보_img();
+            }
+            else if(document.getElementById("최종_result").value < -18){
+                document.getElementById('부등호').innerHTML="진보주의";
+                진보_img();
+            }
+            else if(document.getElementById("최종_result").value < 18){
+                document.getElementById('부등호').innerHTML="중도주의";
+                중도_img();
+            }
+            else if(document.getElementById("최종_result").value < 55){
+                document.getElementById('부등호').innerHTML="보수주의";
+                보수_img();
+            }
+            else if(document.getElementById("최종_result").value < 99){
+                document.getElementById('부등호').innerHTML="찐보수주의";
+                찐보수_img();
+            }
+            else{
+                document.getElementById('부등호').innerHTML="error";
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+    <div id="top-box">
+
+        <input type="checkbox" name="sidebar" id="sidebar_button">
+        <label for="sidebar_button" id="sidebar_label"></label>
+        <div id="sidebar_menu">
+            <h2 id="sidebar_h2">menu</h2>
+            <ol>
+                <li><a href="http://www.naver.com">정치 성향 알아보기</a></li><br>
+                <li><a href="http://www.google.com">지지 정당 알아보기</a></li><br>
+                <li><a href="http://www.nate.com">선호 대통령 알아보기</a></li><br>
+            </ol>
+        </div>
+        <span id="top_line1"></span>
+        <span id="top_line2"></span>
+        <span id="top_line3"></span>
+
+        <span id="top_text">한국형 정치 성향 알아보기</span>
+    </div>
+    <br><br>
+
+
+
+    <h2>1 ) 정치 및 외교 부분</h2>
+
+    <h3>Q1. 우리나라가 외교적으로 더 중요시 해야할 국가는 어디인가요?</h3>
+    <input type="radio" name="정치1" id="미국" onclick="정Q1();">
+    <label for="미국"><strong>미국</strong></label><br>
+    <input type="radio" name="정치1" id="중국" onclick="정Q1();">
+    <label for="중국"><strong>중국</strong></label><br><br><br>
+
+    <h3>Q2. 일본과의 "관계개선"과 "역사 청산" 중에 더 중요한 것은 무엇인가요?</h3>
+    <input type="radio" name="정치2" id="관계_개선" onclick="정Q2();">
+    <label for="관계_개선" id="관계_개선_label">한-미-일 동맹 강화와<br> 경제 협령을 위한 <strong>관계개선</strong></label><br>
+    <input type="radio" name="정치2" id="역사_청산" onclick="정Q2();">
+    <label for="역사_청산" id="역사_청산_label">피해자들에 대한 사과와 <strong>역사 청산</strong><br></label><br><br><br>
+    
+    <h3>Q3. 한국 외교가 지향해야할 방향은 어디라고 생각하시나요?</h3>
+    <input type="radio" name="정치3" id="4강_외교" onclick="정Q3();">
+    <label for="4강_외교" id="4강_외교_label">미-중-러-일 <strong>4강 외교</strong></label><br>
+    <input type="radio" name="정치3" id="다양한_국가" onclick="정Q3();">
+    <label for="다양한_국가" id="다양한_국가_label">보다 더 <strong>다양한 국가들</strong></label><br><br><br>
+
+    <h3>Q4. 우리나라가 지향해야 할 민주주의 방식은 무엇인가요?</h3>
+    <input type="radio" name="정치4" id="사회민주주의" onclick="정Q4();">
+    <label for="사회민주주의" id="사회민주주의_label"><strong>사회 민주주의</strong></label><br>
+    <input type="radio" name="정치4" id="자유민주주의" onclick="정Q4();">
+    <label for="자유민주주의" id="자유민주주의_label"><strong>자유 민주주의</strong></label><br><br><br>
+
+    <h3>Q5. 지방분권의 상징인 세종시 정부청사 이전에 대한 평가는 무엇인가요?</h3>
+    <input type="radio" name="정치5" id="지역균형_발전" onclick="정Q5();">
+    <label for="지역균형_발전" id="지역균형_발전_label"><strong>지역균형 발전</strong> 에 도움을 주었다</label><br>
+    <input type="radio" name="정치5" id="사회적_비용" onclick="정Q5();">
+    <label for="사회적_비용" id="사회적_비용_label"><strong>사회적 비용</strong>을 늘려 비효율적이다</label><br><br><br>
+    <br><br><br>
+
+
+
+    <h2>2 ) 안보 및 통일 부분</h2>
+
+    <h3>Q1. 큰 사회적 비용을 감내하더라도 통일은 필요하다고 생각하시나요?</h3>
+    <input type="radio" name="안보1" id="통일_필요" onclick="안Q1();">
+    <label for="통일_필요" id="통일_필요_label">사회적 비용을 감내하더라도<br> 반드시 <strong>통일은 필요하다</strong></label><br>
+    <input type="radio" name="안보1" id="통일_불필요" onclick="안Q1();">
+    <label for="통일_불필요" id="통일_불필요_label">평화만 보장된다면 굳이<br> <strong>통일은 필요하지 않다</strong></label><br><br><br>
+
+    <h3>Q2. 북한의 핵과 미사일 등의 군사적 도발은 우리나라에 실질적인 안보 위협이라고 생각하시나요?</h3>
+    <input type="radio" name="안보2" id="위협이다" onclick="안Q2();">
+    <label for="위협이다" id="위협이다_label">현재는 전쟁 휴전상태이며 언제든<br> 우리나라를 향할 수 있는 <strong>위협이다</strong></label><br>
+    <input type="radio" name="안보2" id="위협_아니다" onclick="안Q2();">
+    <label for="위협_아니다" id="위협_아니다_label">북한 내부의 체제유지를 위한 것이며<br> 그다지 <strong>위협이 아니다</strong></label><br><br><br>
+    
+    <h3>Q3. 북한에 대한 인도적 차원의 경제 지원이 필요하다고 생각하시나요?</h3>
+    <input type="radio" name="안보3" id="지원_필요" onclick="안Q3();">
+    <label for="지원_필요" id="지원_필요_label">같은 동포이므로 지원이 <strong>필요하다</strong></label><br>
+    <input type="radio" name="안보3" id="지원_불필요" onclick="안Q3();">
+    <label for="지원_불필요" id="지원_불필요_label">UN 대북제제 결의안을 준수하여<br> 지원이 <strong>필요하지 않다</strong></label><br><br><br>
+
+    <h3>Q4. 한미 연합훈련의 방향에 대해 어떻게 생각하시나요?</h3>
+    <input type="radio" name="안보4" id="강화" onclick="안Q4();">
+    <label for="강화" id="강화_label">북한의 도발에 대비하기 위해<br><strong>강화</strong>해야 한다</label><br>
+    <input type="radio" name="안보4" id="자제" onclick="안Q4();">
+    <label for="자제" id="자제_label">북한을 자극하지 않기 위해<br><strong>자제</strong>해야 한다</label><br><br><br>
+
+    <h3>Q5. 주한미군의 필요성에 대한 생각은 무엇인가요?</h3>
+    <input type="radio" name="안보5" id="철수_가능" onclick="안Q5();">
+    <label for="철수_가능" id="철수_가능_label">통일 전이라도 안보주권을 위해<br> <strong>주한미군 철수가 가능하다</strong></label><br>
+    <input type="radio" name="안보5" id="철수_불가" onclick="안Q5();">
+    <label for="철수_불가" id="철수_불가_label">통일 전에는 안보를 위해<br> <strong>주한미군 철수는 불가하다</strong></label><br><br><br>
+    <br><br><br>
+
+
+
+    <h2>3 ) 경제 및 노동 부분</h2>
+
+    <h3>Q1. 우리나라의 경제문제를 해결하기 위해 더 필요한 것은 무엇인가요?</h3>
+    <input type="radio" name="경제1" id="경제적_성장" onclick="경Q1();">
+    <label for="경제적_성장"><strong>경제적 성장</strong></label><br>
+    <input type="radio" name="경제1" id="공정한_분배" onclick="경Q1();">
+    <label for="공정한_분배"><strong>공정한 분배</strong></label><br><br><br>
+
+    <h3>Q2. 소득과 재산에 더 영향을 주는 요인은 무엇이라고 생각하시나요?</h3>
+    <input type="radio" name="경제2" id="개인의_능력" onclick="경Q2();">
+    <label for="개인의_능력"><strong>개인의 능력</strong></label><br>
+    <input type="radio" name="경제2" id="사회적_구조" onclick="경Q2();">
+    <label for="사회적_구조"><strong>사회적 구조</strong></label><br><br><br>
+
+    <h3>Q3. "노란봉투법"이 국회를 통과하면 대통령은 거부권을 행사해야 한다고 생각하시나요?</h3>
+    <input type="radio" name="경제3" id="거부권" onclick="경Q3();">
+    <label for="거부권" id="거부권_label"><strong>거부권을 행사</strong>해야 한다</label><br>
+    <input type="radio" name="경제3" id="시행" onclick="경Q3();">
+    <label for="시행" id="시행_label">통과된 법률대로 <strong>시행</strong>해야 한다</label>
+    *노란봉투법: 노조의 파업으로 발생한 손실에 대한 사측의 무분별한 손해배상 청구를 제한하는 내용 등을 담은 법안<br><br><br>
+    
+    
+    <h3>Q4. 민주노총, 화물연대, 건설노조 등의 파업 방식과 시위가 정당하다고 생각하시나요?</h3>
+    <input type="radio" name="경제4" id="노조_파업" onclick="경Q4();">
+    <label for="노조_파업" id="노조_파업_label">노동자의 권리이므로 <strong>정당하다</strong></label><br>
+    <input type="radio" name="경제4" id="불법_파업" onclick="경Q4();">
+    <label for="불법_파업" id="불법_파업_label">불법행위가 있으므로 <strong>정당하지 않다</strong></label><br><br><br>
+
+    <h3>Q5. 현행 근로시간인 "주 52시간"에서 "노동시간을 늘리는 내용의 개정안"에 대해 어떻게 생각하시나요?</h3>
+    <input type="radio" name="경제5" id="노동_증가" onclick="경Q5();">
+    <label for="노동_증가" id="노동_증가_label">기업 활성화를 위해 <strong>필요하다</strong></label><br>
+    <input type="radio" name="경제5" id="노동_유지" onclick="경Q5();">
+    <label for="노동_유지" id="노동_유지_label">노동자 보호를 위해 <strong>불필요하다</strong></label><br><br><br>
+    
+    <br><br><br>
+
+
+
+    <h2>4 ) 문화 및 언론 부분</h2>
+
+    <h3>Q1. 본인은 최신 트렌드에 민감하고 새로운 문화콘텐츠들을 소비하는 데 적극적인가요?</h3>
+    <input type="radio" name="문화1" id="트렌드" onclick="문Q1();">
+    <label for="트렌드">최신 트렌드에 <strong>적극적이다</strong></label><br>
+    <input type="radio" name="문화1" id="트렌드_비민감" onclick="문Q1();">
+    <label for="트렌드_비민감">그다지 <strong>적극적이지 않다</strong></label><br><br><br>
+
+    <h3>Q2. PC주의(정치적 올바름)와 페미니즘을 담은 콘텐츠에 대해 어떻게 생각하시나요?</h3>
+    <input type="radio" name="문화2" id="PC주의_부정" onclick="문Q2();">
+    <label for="PC주의_부정"><strong>부정적인 입장</strong></label><br>
+    <input type="radio" name="문화2" id="PC주의" onclick="문Q2();">
+    <label for="PC주의"><strong>긍정적인 입장</strong></label><br><br><br>
+    
+    <h3>Q3. 폭력적, 선정적 문화 콘텐츠를 엄격히 심의할 필요가 있다고 생각하시나요?</h3>
+    <input type="radio" name="문화3" id="심의" onclick="문Q3();">
+    <label for="심의"><strong>엄격한 심의</strong></label><br>
+    <input type="radio" name="문화3" id="심의_최소" onclick="문Q3();">
+    <label for="심의_최소"><strong>최소한의 심의</strong></label><br><br><br>
+    
+    <h3>Q4. 윤석열 대통령의 미국 방문 중 외교적 논란이 될 수 있는 "부적절한 발언"을 공개한 MBC보도에 대해 어떻게 생각하시나요?</h3>
+    <input type="radio" name="문화4" id="언론_역할" onclick="문Q4();">
+    <label for="언론_역할" id="언론_역할_label">국민에게 사실을 그대로 보도해야하는<br><strong>언론의 역할</strong>을 한 것이다</label><br>
+    <input type="radio" name="문화4" id="국익_훼손" onclick="문Q4();">
+    <label for="국익_훼손" id="국익_훼손_label">외교적 문제로 비화될 수 있는<br><strong>국익 훼손</strong>이므로 보도하지 말았어야 했다</label><br><br><br>
+
+    <h3>Q5. 본인이 신뢰하는 언론 매체를 선택해주세요.<br>(중복선택 가능)</h3>
+    <input type="checkbox" name="문화5" id="조선일보">
+    <label for="조선일보" id="조선일보_label">조선일보</label>
+    <input type="checkbox" name="문화5" id="중앙일보">
+    <label for="중앙일보" id="중앙일보_label">중앙일보</label>
+    <input type="checkbox" name="문화5" id="동아일보">
+    <label for="동아일보" id="동아일보_label">동아일보</label><br>
+    <input type="checkbox" name="문화5" id="한겨례">
+    <label for="한겨례" id="한겨례_label">한겨례</label>
+    <input type="checkbox" name="문화5" id="경향신문">
+    <label for="경향신문" id="경향신문_label">경향신문</label>
+    <input type="checkbox" name="문화5" id="MBC">
+    <label for="MBC" id="MBC_label">MBC</label><br>
+    <input type="checkbox" name="문화5" id="TV조선">
+    <label for="TV조선" id="TV조선_label">TV조선</label>
+    <input type="checkbox" name="문화5" id="채널A">
+    <label for="채널A" id="채널A_label">채널A</label>
+    <input type="checkbox" name="문화5" id="JTBC">
+    <label for="JTBC" id="JTBC_label">JTBC</label><br>
+    <input type="checkbox" name="문화5" id="오마이뉴스">
+    <label for="오마이뉴스" id="오마이뉴스_label">오마이뉴스</label><br><br><br>
+    
+    <br><br><br>
+
+
+
+    <h2>5 ) 복지 및 교육 부분</h2>
+
+    <h3>Q1. 어떤 복지 방식이 더 좋다고 생각하시나요?</h3>
+    <input type="radio" name="복지1" id="선별적_복지" onclick="복Q1();">
+    <label for="선별적_복지">필요한 사람이 더 받는 <strong>선별적 복지</strong></label><br>
+    <input type="radio" name="복지1" id="보편적_복지" onclick="복Q1();">
+    <label for="보편적_복지">모두가 공평하게 받는 <strong>보편적 복지</strong></label><br><br><br>
+
+    <h3>Q2. 전장연의 지하철 시위방식에 대해서 어떻게 생각하나요?</h3>
+    <input type="radio" name="복지2" id="전장연_불법" onclick="복Q2();">
+    <label for="전장연_불법">시민들에 피해를 주는 <strong>불법 시위</strong></label><br>
+    <input type="radio" name="복지2" id="전장연_정당" onclick="복Q2();">
+    <label for="전장연_정당">장애인 권리를 찾기위한 <strong>정당한 시위</strong></label><br><br><br>
+
+    <h3>Q3. 국제 경기가 어려울수록 정부부채를 늘려서라도 복지를 늘려야 하나요?</h3>
+    <input type="radio" name="복지3" id="복지_증대" onclick="복Q3();">
+    <label for="복지_증대">어려운 국민을 위해 <strong>늘려야한다</strong></label><br>
+    <input type="radio" name="복지3" id="복지_긴축" onclick="복Q3();">
+    <label for="복지_긴축">정부 재정을 고려해 <strong>긴축해야 한다</strong></label><br><br><br>
+
+    <h3>Q4. 촉법소년에 대한 처벌에서 더 중요한 것은 무엇인가요?</h3>
+    <input type="radio" name="복지4" id="촉법소년_교화" onclick="복Q4();">
+    <label for="촉법소년_교화">재사회화를 위한 <strong>교화와 교육</strong></label><br>
+    <input type="radio" name="복지4" id="촉법소년_처벌" onclick="복Q4();">
+    <label for="촉법소년_처벌">피해자가 납득할 수준의 <strong>강한 처벌</strong></label><br><br><br>
+
+    <h3>Q5. 현재 공교육에서 더 중요하다고 생각하는 것은 무엇인가요?</h3>
+    <input type="radio" name="복지5" id="교권_신장" onclick="복Q5();">
+    <label for="교권_신장">과도하게 낮아진 <strong>교권의 신장</strong></label><br>
+    <input type="radio" name="복지5" id="학생인권" onclick="복Q5();">
+    <label for="학생인권">아직도 부족한 <strong>학생인권 보호</strong></label><br><br><br>
+
+    <br><br><br>
+
+    
+    <h2>6 ) 종교 및 가치</h2>
+
+    <h3>Q1. 종교를 갖는 것은 개인의 도덕성, 심적 안정감, 대인관계 등에 도움이 되나요?</h3>
+    <input type="radio" name="종교1" id="종교" onclick="종Q1();">
+    <label for="종교"><strong>도움이 된다</strong></label><br>
+    <input type="radio" name="종교1" id="종교_부정" onclick="종Q1();">
+    <label for="종교_부정"><strong>도움이 되지 않는다</strong></label><br><br><br>
+    
+    <h3>Q2. 우리 사회에 종교는 긍정적인 영향과 부정적인 영향 중 무엇이 더 크다고 생각하시나요?</h3>
+    <input type="radio" name="종교2" id="종교2" onclick="종Q2();">
+    <label for="종교2">봉사와 기부를 고려하면 <strong>긍정적이다</strong></label><br>
+    <input type="radio" name="종교2" id="종교2_부정" onclick="종Q2();">
+    <label for="종교2_부정">반사회적 행태를 고려하면 <strong>부정적이다</strong></label><br><br><br>
+    
+    <h3>Q3. 사람을 평가할 때 학벌, 직업, 집안, 소득 및 재산은 중요한 기준인가요?</h3>
+    <input type="radio" name="종교3" id="사람_평가" onclick="종Q3();">
+    <label for="사람_평가">지금 시대에도 여전히 <strong>중요하다</strong></label><br>
+    <input type="radio" name="종교3" id="사람_평가_덜중요" onclick="종Q3();">
+    <label for="사람_평가_덜중요">지금 시대에는 <strong>덜 중요하다</strong></label><br><br><br>
+    
+    <h3>Q4. 절대적 가치나 절대적 윤리 기준이 존재한다고 생각하시나요?</h3>
+    <input type="radio" name="종교4" id="적대가치" onclick="종Q4();">
+    <label for="적대가치"><strong>존재한다</strong></label><br>
+    <input type="radio" name="종교4" id="상대가치" onclick="종Q4();">
+    <label for="상대가치">사람마다 상대적이므로 <strong>존재하지 않는다</strong></label><br><br><br>
+
+    <h3>Q5. 동의하는 내용을 선택해주세요.<br>(중복선택 가능)</h3>
+    <input type="checkbox" name="종교5" id="차별금지법">
+    <label for="차별금지법"><strong>차별금지법</strong>이 제정되어야 한다</label><br>
+    <input type="checkbox" name="종교5" id="낙태죄">
+    <label for="낙태죄"><strong>낙태죄</strong>가 폐지되어야 한다</label><br>
+    <input type="checkbox" name="종교5" id="간통죄">
+    <label for="간통죄"><strong>간통죄</strong>가 부활되어야 한다</label><br>
+    <input type="checkbox" name="종교5" id="대리모">
+    <label for="대리모">불임부부의 <strong>대리모 출산</strong>이 허용되어야 한다</label><br>
+    <input type="checkbox" name="종교5" id="존엄사" onclick="존엄사1()">
+    <label for="존엄사">시한부 환자의 <strong>존엄사</strong>를 인정해 줘야 한다</label><br>
+    <br><br><br>
+
+
+    <div id="result_surmery">
+        <br><br>
+        <div id="결과_line"></div><br><br><br>
+        <div  id="최종_결과">
+            <div id="이미지_찐진보">
+                <img src="https://previews.123rf.com/images/modestil/modestil1508/modestil150800008/43829367-%EB%AC%B4%EC%A7%80%EA%B0%9C-%EA%B9%83%EB%B0%9C.jpg" alt="찐진보 사진" width="100%">
+            </div>
+            <div id="이미지_진보">
+                <img src="https://previews.123rf.com/images/radiantskies/radiantskies1301/radiantskies130102130/17427391-%EA%B4%80%EB%A0%A8-%ED%83%9C%EA%B7%B8%EC%99%80-%EC%A1%B0%EA%B1%B4%EC%97%90-%EC%A7%84%EB%B3%B4%EC%A3%BC%EC%9D%98%EC%97%90-%EB%8C%80-%ED%95%9C-%EC%B6%94%EC%83%81%EC%A0%81-%EC%9D%B8-%EB%8B%A8%EC%96%B4-%EA%B5%AC%EB%A6%84.jpg" alt="진보 사진" width="100%">
+            </div>
+            <div id="이미지_중도">
+                <img src="https://img.freepik.com/premium-photo/spheres-balancing-on-a-seesaw_165073-960.jpg" alt="중도 사진" width="100%">
+            </div>
+            <div id="이미지_보수">
+                <img src="https://i2-prod.mirror.co.uk/incoming/article5604827.ece/ALTERNATES/s615b/torytorch.jpg" alt="보수 사진" width="100%">
+            </div>
+            <div id="이미지_찐보수">
+                <img src="http://monthly.chosun.com/upload/1611/1611_246.jpg" alt="찐보수 사진" width="100%">
+            </div>
+            <div id="결과_글자크기">당신의 정치성향은<br> <strong><u id="부등호"></u></strong> 입니다</div>
+        </div>
+
+        <div>
+            <div id="스펙트럼_위치" class="스펙트럼_위치1"></div>
+            <img id="스펙트럼_img" src="spectrum_img.png" alt="스펙트럼_배경">
+            <div><span id="진보적_span">진보적</span><span id="보수적_span">보수적</span></div>
+        </div>
+    </div>
+
+
+    <input type="checkbox" name="결과버튼" id="결과버튼" onclick="button_opption()">
+    <label for="결과버튼" id="결과버튼_label"><strong>결과 보기</strong></label><br>
+    <br>
+
+    <table id="임시_table">
+        <tr>
+            <td>문화Q5</td>
+            <td><input value="-" class="숫자_인풋" id="임시_1_1"></td>
+            <td><input value="-" class="숫자_인풋" id="임시_1_2"></td>
+            <td><input value="-" class="숫자_인풋" id="임시_1_3"></td>
+            <td><input value="-" class="숫자_인풋" id="임시_1_4"></td>
+            <td><input value="-" class="숫자_인풋" id="임시_1_5"></td>
+            <td><input value="-" class="숫자_인풋" id="임시_1_6"></td>
+            <td><input value="-" class="숫자_인풋" id="임시_1_7"></td>
+            <td><input value="-" class="숫자_인풋" id="임시_1_8"></td>
+            <td><input value="-" class="숫자_인풋" id="임시_1_9"></td>
+            <td><input value="-" class="숫자_인풋" id="임시_1_10"></td>
+        </tr>
+        <tr>
+            <td>종교Q5</td>
+            <td><input value="-" class="숫자_인풋" id="임시_2_1"></td>
+            <td><input value="-" class="숫자_인풋" id="임시_2_2"></td>
+            <td><input value="-" class="숫자_인풋" id="임시_2_3"></td>
+            <td><input value="-" class="숫자_인풋" id="임시_2_4"></td>
+            <td><input value="-" class="숫자_인풋" id="임시_2_5"></td>
+        </tr>
+    </table><br><br><br>
+
+    <div id="result_bill">
+        
+        <h3>정치 성향 결과 기준표</h3>
+        결과의 계산은 아래와 같은 방식으로 합산하여 이루졌습니다.<br>
+        
+        <table class="result_barometer">
+            <tr><td></td><td>진보적 답변</td><td>보수적 답변</td></tr>
+            <tr><td>단일선택형 설문</td><td>-3</td><td>3</td></tr>
+            <tr><td>중복선택형 설문</td><td>-2</td><td>2</td></tr>
+        </table><br><br>
+        구간별 성향 구분 기준
+        <table class="result_barometer">
+            <tr><td>찐진보</td><td colspan="2">~ -57</td></tr>
+            <tr><td>진보</td><td colspan="2">-58 ~ -17</td></tr>
+            <tr><td>중도</td><td colspan="2">-18 ~ 17</td></tr>
+            <tr><td>보수</td><td colspan="2">18 ~ 57</td></tr>
+            <tr><td>찐보수</td><td colspan="2">58 ~</td></tr>
+        </table><br><br><br>
+        
+        선택 문항별 점수표
+        <table id="table_result">
+            <thead>
+                <tr>
+                    <td>분야</td>
+                    <td>Q1</td>
+                    <td>Q2</td>
+                    <td>Q3</td>
+                    <td>Q4</td>
+                    <td>Q5</td>
+                    <td>분야 합계</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>정치 및 외교 부분</td>
+                    <td><input id="정치td1" value="-" class="숫자_인풋"></td>
+                    <td><input id="정치td2" value="-" class="숫자_인풋"></td>
+                    <td><input id="정치td3" value="-" class="숫자_인풋"></td>
+                    <td><input id="정치td4" value="-" class="숫자_인풋"></td>
+                    <td><input id="정치td5" value="-" class="숫자_인풋"></td>
+                    <td><input id="정치_result" value="-" class="숫자_인풋"></td>
+                </tr>
+                <tr>
+                    <td>안보 및 통일 부분</td>
+                    <td><input id="안보td1" value="-" class="숫자_인풋"></td>
+                    <td><input id="안보td2" value="-" class="숫자_인풋"></td>
+                    <td><input id="안보td3" value="-" class="숫자_인풋"></td>
+                    <td><input id="안보td4" value="-" class="숫자_인풋"></td>
+                    <td><input id="안보td5" value="-" class="숫자_인풋"></td>
+                    <td><input id="안보_result" value="-" class="숫자_인풋"></td>
+                </tr>
+                <tr>
+                    <td>경제 및 노동 부분</td>
+                    <td><input id="경제td1" value="-" class="숫자_인풋"></td>
+                    <td><input id="경제td2" value="-" class="숫자_인풋"></td>
+                    <td><input id="경제td3" value="-" class="숫자_인풋"></td>
+                    <td><input id="경제td4" value="-" class="숫자_인풋"></td>
+                    <td><input id="경제td5" value="-" class="숫자_인풋"></td>
+                    <td><input id="경제_result" value="-" class="숫자_인풋"></td>
+                </tr>
+                <tr>
+                    <td>문화 및 언론 부분</td>
+                    <td><input id="문화td1" value="-" class="숫자_인풋"></td>
+                    <td><input id="문화td2" value="-" class="숫자_인풋"></td>
+                    <td><input id="문화td3" value="-" class="숫자_인풋"></td>
+                    <td><input id="문화td4" value="-" class="숫자_인풋"></td>
+                    <td><input id="문화td5" value="-" class="숫자_인풋"></td>
+                    <td><input id="문화_result" value="-" class="숫자_인풋"></td>
+                </tr>
+                <tr>
+                    <td>복지 및 교육 부분</td>
+                    <td><input id="복지td1" value="-" class="숫자_인풋"></td>
+                    <td><input id="복지td2" value="-" class="숫자_인풋"></td>
+                    <td><input id="복지td3" value="-" class="숫자_인풋"></td>
+                    <td><input id="복지td4" value="-" class="숫자_인풋"></td>
+                    <td><input id="복지td5" value="-" class="숫자_인풋"></td>
+                    <td><input id="복지_result" value="-" class="숫자_인풋"></td>
+                </tr>
+                <tr>
+                    <td>종교 및 가치 부분</td>
+                    <td><input id="종교td1" value="-" class="숫자_인풋"></td>
+                    <td><input id="종교td2" value="-" class="숫자_인풋"></td>
+                    <td><input id="종교td3" value="-" class="숫자_인풋"></td>
+                    <td><input id="종교td4" value="-" class="숫자_인풋"></td>
+                    <td><input id="종교td5" value="-" class="숫자_인풋"></td>
+                    <td><input id="종교_result" value="-" class="숫자_인풋"></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="6">결과 합계</td>
+                    <td><input id="최종_result" value="-" class="숫자_인풋"></td>
+                </tr>
+            </tfoot>
+        </table><br><br><br>
+        
+    </div>
+    
+</body>
+
+
+
+</html>
